@@ -12,7 +12,7 @@
 
 ## 安装
 
-### 方法1：快速安装到Termux
+### 快速安装 to Termux
 
 ```bash
 # 克隆项目
@@ -25,7 +25,7 @@ chmod +x scripts/build.sh
 make quick-install
 ```
 
-### 方法2：构建Deb包安装
+### 构建Deb包安装
 
 ```bash
 # 构建Deb包
@@ -35,7 +35,7 @@ make deb
 dpkg -i build/https-server_1.0.0_aarch64.deb
 ```
 
-### 方法3：手动构建
+### 手动构建
 
 ```bash
 # 确保已安装Go 1.19+
@@ -69,7 +69,6 @@ https-certgen --install
 - 将证书复制到手机存储
 - 设置 → 安全 → 加密与凭据 → 安装证书 → CA证书
 - 选择证书文件
-- 或者直接在设置上方搜索框搜索证书，然后找到安装证书，或者说是证书之类的字眼。根据提示，找到安装证书的地方，安装证书。
 
 ### 3. 启动服务器
 
@@ -95,31 +94,12 @@ https-server --version
 https-server --help
 ```
 
-### 4. 关于目录设置
-
-服务器默认在当前工作目录提供服务，这是文件服务器的标准行为。如果您想在特定目录启动服务器，可以：
-
-1. 先切换到目标目录，再启动服务器：
-```bash
-cd /path/to/your/directory
-https-server
-```
-
-2. 使用 `-dir` 参数指定目录：
-```bash
-https-server -dir=/path/to/your/directory
-```
-
-这样设计是为了让用户能够灵活选择要共享的目录，而不是固定到某个特定路径。
-
 ## 项目结构
 
 ```
 https-server/
 ├── go.mod                     # Go模块文件
-├── go.sum                     # Go模块校验和
 ├── Makefile                   # 构建脚本
-├── main.go                    # 主程序入口（链接到src/https-server.go）
 ├── LICENSE                    # 许可证文件
 ├── README.md                  # 说明文档
 ├── cmd/                       # 命令行工具
@@ -160,33 +140,6 @@ $PREFIX/etc/https-server/key.pem  # 服务器私钥
 # 用户证书文件
 ~/https-ca.crt                    # CA证书（手动安装到安卓）
 ```
-
-### Termux Deb包结构
-
-Deb包内部结构遵循Termux标准：
-
-```
-data/data/com.termux/files/usr/bin/https-server
-data/data/com.termux/files/usr/bin/https-certgen
-data/data/com.termux/files/usr/etc/https-server/
-data/data/com.termux/files/usr/share/doc/https-server/
-```
-
-### Termux目录结构说明
-
-在Termux中，$PREFIX通常为`/data/data/com.termux/files/usr`，文件被安装到以下位置：
-
-- 二进制文件: `$PREFIX/bin/`
-- 配置文件: `$PREFIX/etc/`
-- 数据文件: `$PREFIX/share/`
-- 库文件: `$PREFIX/lib/`
-- 许可证: `$PREFIX/share/licenses/`
-
-## 证书说明
-
-- CA证书放在用户目录，方便手动安装到安卓系统
-- 服务器证书和密钥放在系统目录
-- 支持100年有效期的CA证书和服务器证书（永久证书）
 
 ## 安全特性
 

@@ -3,14 +3,11 @@ set -e
 
 echo "🔧 配置HTTPS服务器..."
 
-# 检测是否在Termux环境中
 if [ -n "$PREFIX" ]; then
-    # Termux环境
     echo "检测到Termux环境: $PREFIX"
     mkdir -p $PREFIX/etc/https-server
     chmod 755 $PREFIX/etc/https-server
 else
-    # 标准Linux环境
     mkdir -p /etc/https-server
     chmod 755 /etc/https-server
 fi

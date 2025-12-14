@@ -1,4 +1,3 @@
-// pkg/certgen/certgen.go
 package certgen
 
 import (
@@ -15,7 +14,6 @@ import (
 	"time"
 )
 
-// GetLocalIP 获取本机IP
 func GetLocalIP() string {
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {
@@ -31,7 +29,6 @@ func GetLocalIP() string {
 	return "127.0.0.1"
 }
 
-// GenerateCACert 生成CA证书
 func GenerateCACert() ([]byte, *rsa.PrivateKey, error) {
 	caKey, err := rsa.GenerateKey(rand.Reader, 4096)
 	if err != nil {
@@ -60,7 +57,6 @@ func GenerateCACert() ([]byte, *rsa.PrivateKey, error) {
 	return caCertDER, caKey, nil
 }
 
-// GenerateServerCert 生成服务器证书
 func GenerateServerCert(caCertDER []byte, caKey *rsa.PrivateKey, ip string) ([]byte, *rsa.PrivateKey, error) {
 	caCert, err := x509.ParseCertificate(caCertDER)
 	if err != nil {
@@ -99,7 +95,6 @@ func GenerateServerCert(caCertDER []byte, caKey *rsa.PrivateKey, ip string) ([]b
 	return serverCertDER, serverKey, nil
 }
 
-// SaveCertFile 保存证书文件
 func SaveCertFile(path string, certDER []byte, mode os.FileMode) {
 	file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, mode)
 	if err != nil {
@@ -113,7 +108,6 @@ func SaveCertFile(path string, certDER []byte, mode os.FileMode) {
 	})
 }
 
-// SaveKeyFile 保存私钥文件
 func SaveKeyFile(path string, key *rsa.PrivateKey, mode os.FileMode) {
 	file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, mode)
 	if err != nil {
@@ -127,7 +121,6 @@ func SaveKeyFile(path string, key *rsa.PrivateKey, mode os.FileMode) {
 	})
 }
 
-// ShowInstructions 显示安装说明
 func ShowInstructions(caCertPath string) {
 	fmt.Println("\n📱 安卓证书安装步骤:")
 	fmt.Println("  1. 找到CA证书文件:", caCertPath)
