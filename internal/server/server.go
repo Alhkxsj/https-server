@@ -1,33 +1,38 @@
 package server
 
 import (
-	"crypto/tls"
-	"log"
+	"fmt"
 	"net/http"
-	"os"
 )
 
-func RunServer(addr string, handler http.Handler, tlsConfig *tls.Config, quiet bool) {
-	server := &http.Server{
-		Addr:      addr,
+type Options struct {
+	Addr     string
+	Root     string
+	Quiet    bool
+	CertPath string
+	KeyPath  string
+}
+
+func Run(opt Options) error {
+	tlsConfig, err := LoadTLSConfig(opt.CertPath, opt.KeyPath)
+	if err != nil {
+		return err
+	}
+
+	handler := NewHandler(opt.Root, opt.Quiet)
+
+	srv := &http.Server{
+		Addr:      opt.Addr,
 		Handler:   handler,
 		TLSConfig: tlsConfig,
 	}
-	
-	if !quiet {
-		log.Printf("服务启动: https://localhost%s", addr)
-	}
-	
-	if err := server.ListenAndServeTLS("", ""); err != nil {
-		log.Fatal("服务器错误:", err)
-	}
-}
 
-func IsInTermux() bool {
-	prefix := os.Getenv("PREFIX")
-	if prefix != "" && len(prefix) > 4 && prefix[len(prefix)-4:] == "/usr" {
-		return true
+	if !opt.Quiet {
+		fmt.Printf("🚀 HTTPS 服务器已启动\n")
+		fmt.Printf("📁 共享目录: %s\n", opt.Root)
+		fmt.Printf("🔐 监听地址: %s\n", opt.Addr)
+		fmt.Println("🛑 按 Ctrl+C 停止\n")
 	}
-	_, err := os.Stat("/data/data/com.termux/files/usr/bin/termux-setup-storage")
-	return err == nil
+
+	return srv.ListenAndServeTLS("", "")
 }
