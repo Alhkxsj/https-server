@@ -24,11 +24,11 @@ func checkPort(addr string) error {
 // 运行前环境自检
 func PreflightCheck(addr, certPath, keyPath string) error {
 	if _, err := os.Stat(certPath); err != nil {
-		return fmt.Errorf("未找到证书文件：%s\n请先运行 hserve gen-cert 生成证书", certPath)
+		return fmt.Errorf("未找到证书文件：%s\n请先运行 hserve-certgen 生成证书", certPath)
 	}
 
 	if _, err := os.Stat(keyPath); err != nil {
-		return fmt.Errorf("未找到私钥文件：%s\n请先运行 hserve gen-cert 生成证书", keyPath)
+		return fmt.Errorf("未找到私钥文件：%s\n请先运行 hserve-certgen 生成证书", keyPath)
 	}
 
 	if err := checkPort(addr); err != nil {

@@ -1,74 +1,47 @@
-# Go parameters
-GOCMD=go
-GOBUILD=$(GOCMD) build
-GOCLEAN=$(GOCMD) clean
-GOTEST=$(GOCMD) test
-GOMOD=$(GOCMD) mod
-GOGET=$(GOCMD) get
-GOVET=$(GOCMD) vet
-GOFMT=gofmt
-BINARY_NAME=hserve
-BINARY_UNIX=$(BINARY_NAME)_unix
+.PHONY: all build clean install termux-deb
 
-# Build the project
-build: 
-	$(GOBUILD) -o $(BINARY_NAME) -v ./cmd/hserve
+APP_NAME := hserve
+VERSION  := 1.2.2
 
-# Install the binary to system
+PREFIX ?= /data/data/com.termux/files/usr
+BIN_DIR := build/bin
+DIST_DIR := dist
+PKG_DIR := build/pkg
+
+all: build
+
+build:
+	@echo "🔧 构建程序..."
+	@mkdir -p $(BIN_DIR)
+	go build -o $(BIN_DIR)/hserve ./cmd/hserve
+	go build -o $(BIN_DIR)/hserve-certgen ./cmd/hserve-certgen
+	@echo "✅ 构建完成"
+
 install: build
-	cp $(BINARY_NAME) $(HOME)/go/bin/ || cp $(BINARY_NAME) /usr/local/bin/ || echo "Please copy $(BINARY_NAME) to a directory in your PATH"
+	@echo "📦 安装到 Termux..."
+	install -Dm755 $(BIN_DIR)/hserve $(PREFIX)/bin/hserve
+	install -Dm755 $(BIN_DIR)/hserve-certgen $(PREFIX)/bin/hserve-certgen
+	mkdir -p $(PREFIX)/etc/hserve
+	@echo "✅ 安装完成"
 
-# Run tests
-test: 
-	$(GOTEST) -v ./...
+deb: build
+	@echo "📦 构建 Termux deb 包..."
+	rm -rf $(PKG_DIR)
+	mkdir -p $(PKG_DIR)/DEBIAN
+	mkdir -p $(PKG_DIR)$(PREFIX)/bin
+	mkdir -p $(PKG_DIR)$(PREFIX)/etc/hserve
 
-# Run go vet
-vet:
-	$(GOVET) ./...
+	cp packaging/termux/control  $(PKG_DIR)/DEBIAN/
+	cp packaging/termux/postinst $(PKG_DIR)/DEBIAN/
+	cp packaging/termux/prerm    $(PKG_DIR)/DEBIAN/
+	chmod 755 $(PKG_DIR)/DEBIAN
+	chmod 755 $(PKG_DIR)/DEBIAN/*
 
-# Format code
-fmt:
-	$(GOFMT) -s -w ./
+	cp $(BIN_DIR)/hserve     $(PKG_DIR)$(PREFIX)/bin/
+	cp $(BIN_DIR)/hserve-certgen    $(PKG_DIR)$(PREFIX)/bin/
 
-# Clean build artifacts
+	dpkg-deb --build $(PKG_DIR) $(DIST_DIR)/$(APP_NAME)_$(VERSION)_aarch64.deb
+	@echo "✅ deb 构建完成"
+
 clean:
-	$(GOCLEAN)
-	rm -f $(BINARY_NAME)
-
-# Run go mod tidy
-tidy:
-	$(GOMOD) tidy
-
-# Build for multiple architectures
-multiarch:
-	GOOS=linux GOARCH=amd64 $(GOBUILD) -o dist/$(BINARY_NAME)-linux-amd64 -v ./cmd/hserve
-	GOOS=linux GOARCH=arm64 $(GOBUILD) -o dist/$(BINARY_NAME)-linux-arm64 -v ./cmd/hserve
-	GOOS=linux GOARCH=arm $(GOBUILD) -o dist/$(BINARY_NAME)-linux-arm -v ./cmd/hserve
-	GOOS=android GOARCH=arm64 $(GOBUILD) -o dist/$(BINARY_NAME)-android-arm64 -v ./cmd/hserve
-	GOOS=android GOARCH=arm $(GOBUILD) -o dist/$(BINARY_NAME)-android-arm -v ./cmd/hserve
-	GOOS=darwin GOARCH=amd64 $(GOBUILD) -o dist/$(BINARY_NAME)-darwin-amd64 -v ./cmd/hserve
-	GOOS=darwin GOARCH=arm64 $(GOBUILD) -o dist/$(BINARY_NAME)-darwin-arm64 -v ./cmd/hserve
-	GOOS=windows GOARCH=amd64 $(GOBUILD) -o dist/$(BINARY_NAME)-windows-amd64.exe -v ./cmd/hserve
-
-# Build deb package
-deb:
-	@echo "Building deb package..."
-	@mkdir -p dist
-	./scripts/build-deb.sh
-
-# Install deb package
-install-deb: deb
-	sudo dpkg -i dist/*.deb
-
-# Run all checks
-check: vet test
-
-# Generate certificates (for testing)
-gen-cert:
-	./$(BINARY_NAME) gen-cert
-
-# Run server (for testing)
-serve:
-	./$(BINARY_NAME) serve
-
-.PHONY: build install test vet fmt clean multiarch deb install-deb check gen-cert serve tidy
+	rm -rf build dist

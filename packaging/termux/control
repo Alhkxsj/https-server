@@ -1,7 +1,7 @@
 Package: hserve
-Version: 1.2.1
+Version: 1.2.2
 Architecture: aarch64
-Maintainer: Alhkxsj <fan343908@@gmail.com>
+Maintainer: Alhkxsj <https://github.com/Alhkxsj>
 Homepage: https://github.com/Alhkxsj/hserve
 Depends: openssl, ca-certificates
 Description: Simple and easy-to-use HTTPS file server for Termux

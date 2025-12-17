@@ -1,107 +1,107 @@
-1. Design Goals
+1. 设计目标
 
-The security model of this project follows these principles:
+本项目安全模型遵循以下原则：
 
-Local-first
+本地优先
 
-Full user control
+用户完全可控
 
-No third-party CA dependency
+不依赖第三方 CA
 
-No complex PKI system
-
-
-
----
-
-2. Trust Model
-
-User
- └─ Install local CA (user actively trusts)
-      └─ hserve (only valid locally)
-
-CA is only generated on this device
-
-Private key never leaves the device
+不引入复杂 PKI 体系
 
 
 
 ---
 
-3. Why Use Self-Signed CA
+2. 信任模型
 
-Reasons:
+用户
+ └─ 安装本地 CA（用户主动信任）
+      └─ hserve（仅本地有效）
 
-Let's Encrypt is not suitable for local / IP usage
+CA 只在本机生成
 
-Android local development certificate needs are clear
+私钥不离开设备
 
-Self-signed CA = User actively trusts
-
-
-This is a developer tool, not a public network service.
 
 
 ---
 
-4. TLS Policy
+3. 为什么使用自签 CA
 
-TLS minimum version: TLS 1.2
+原因：
 
-Disable insecure protocols
+Let’s Encrypt 不适合本地 / IP
 
-Certificate validity is longer to reduce repeated operations
+Android 本地开发证书需求明确
+
+自签 CA = 用户主动信任
 
 
-Specific parameters defined in:
+这是 开发者工具，不是公网服务。
+
+
+---
+
+4. TLS 策略
+
+TLS 最低版本：TLS 1.2
+
+禁用不安全协议
+
+证书有效期较长，减少重复操作
+
+
+具体参数定义见：
 
 internal/tls/policy.go
 
 
 ---
 
-5. Things Not Done (Intentionally)
+5. 不做的事情（刻意）
 
-[X] Automatically install system certificates
+❌ 自动安装系统证书
 
-[X] Bypass Android security prompts
+❌ 绕过 Android 安全提示
 
-[X] Background resident service
-
-
-Users must clearly know what they are doing.
+❌ 后台常驻服务
 
 
----
-
-4. Applicable Scenarios Summary
-
-Local HTTPS development testing
-
-Android ↔ PC file sharing
-
-LAN device access
-
-
-Not suitable for:
-
-Public network deployment
-
-Commercial HTTPS services
-
+用户必须明确知道自己在做什么。
 
 
 ---
 
-5. Conclusion
+四、适用场景总结
 
-This is a tool designed for clear-minded people.
+本地 HTTPS 开发测试
 
-No magic
+Android ↔ PC 文件共享
 
-No hidden behavior
-
-All certificates and trusts are in your hands
+局域网设备访问
 
 
-If you understand HTTPS, you will like it.
+不适合：
+
+公网部署
+
+商业 HTTPS 服务
+
+
+
+---
+
+五、结束语
+
+这是一个 为清楚的人准备的工具。
+
+没有魔法
+
+没有隐蔽行为
+
+所有证书、信任都在你手里
+
+
+如果你理解 HTTPS，那么你会喜欢它。

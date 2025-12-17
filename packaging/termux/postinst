@@ -1,93 +1,16 @@
 #!/bin/bash
 set -e
 
-echo "[UPDATE] Installing hserve..."
-
-# 检查是否已存在旧版本的证书
-OLD_CERT_DIR="$PREFIX/etc/hserve"
-if [ -d "$OLD_CERT_DIR" ] && [ -d "$OLD_CERT_DIR/certs" ]; then
-    echo "[CLEAN] Old certificates detected, cleaning up..."
-    
-    # 尝试移除旧的证书文件
-    if [ -f "$PREFIX/etc/tls/certs/hserve_ca.crt" ]; then
-        rm -f "$PREFIX/etc/tls/certs/hserve_ca.crt"
-        echo "[SUCCESS] Old Termux trusted certificate cleaned"
-    fi
-    
-    # 保留用户数据，但清理证书
-    if [ -d "$OLD_CERT_DIR/certs" ]; then
-        rm -rf "$OLD_CERT_DIR/certs"
-        echo "[SUCCESS] Old certificate files cleaned"
-    fi
-fi
-
-echo "[INIT] Initializing HTTPS server environment..."
+echo "🔧 初始化 hserve 环境..."
 
 CERT_DIR="$PREFIX/etc/hserve"
 mkdir -p "$CERT_DIR"
 chmod 755 "$CERT_DIR"
 
-# 确保 Termux 证书目录存在
-TERMUX_CERT_DIR="$PREFIX/etc/tls/certs/"
-mkdir -p "$TERMUX_CERT_DIR"
-
-# 询问用户首选语言界面
-echo "[PROMPT] Select default language interface:"
-echo "  1. English (default)"
-echo "  2. Chinese"
-read -p "Enter choice (1 or 2, default 1): " lang_choice
-
-if [ "$lang_choice" = "2" ]; then
-    echo "[LANG] Setting default language to Chinese..."
-    # 创建配置文件以记住用户的选择
-    mkdir -p "$PREFIX/etc/hserve/config"
-    echo "zh" > "$PREFIX/etc/hserve/config/default_lang"
-    # 生成证书时使用中文
-    if command -v hserve >/dev/null 2>&1; then
-        hserve gen-cert --force --lang=zh
-        echo "[SUCCESS] Certificates have been regenerated (Chinese interface)"
-    else
-        echo "[WARNING] Failed to execute hserve command, attempting to create certificate directory..."
-        mkdir -p "$CERT_DIR/certs"
-    fi
-else
-    echo "[LANG] Setting default language to English..."
-    # 创建配置文件以记住用户的选择
-    mkdir -p "$PREFIX/etc/hserve/config"
-    echo "en" > "$PREFIX/etc/hserve/config/default_lang"
-    # 生成证书时使用英文
-    if command -v hserve >/dev/null 2>&1; then
-        hserve gen-cert --force --lang=en
-        echo "[SUCCESS] Certificates have been regenerated (English interface)"
-    else
-        echo "[WARNING] Failed to execute hserve command, attempting to create certificate directory..."
-        mkdir -p "$CERT_DIR/certs"
-    fi
-fi
-
-# 如果在 Termux 环境中，尝试自动安装 CA 证书到 Termux 信任库
-if [ -n "$PREFIX" ] && [ -f "$PREFIX/etc/hserve/certs/ca.crt" ]; then
-    echo "[INSTALL] Attempting to install CA certificate to Termux trusted store..."
-    
-    if cp "$PREFIX/etc/hserve/certs/ca.crt" "$TERMUX_CERT_DIR/hserve_ca.crt" 2>/dev/null; then
-        echo "[SUCCESS] CA certificate automatically installed to Termux trusted store"
-        echo "[INFO] You just need to install CA certificate in Android system settings if needed"
-    else
-        echo "[ERROR] Failed to install CA certificate to Termux trusted store"
-        echo "[INFO] Please manually run 'hserve install-ca' to install certificate to Termux trusted store"
-    fi
-fi
-
-echo "[SUCCESS] Installation completed"
+echo "✅ 安装完成"
 echo ""
-echo "[USAGE] Usage guide:"
-echo "  1. Install CA certificate in Android system settings (if needed)"
-echo "  2. Start server: hserve"
-echo "  3. Access: https://localhost:8443"
-echo ""
-echo "[OPTIONS] Advanced options:"
-echo "  - Use custom port: hserve --port 9443"
-echo "  - Use custom directory: hserve --dir /sdcard"
-echo "  - Quiet mode: hserve --quiet"
-echo "  - Switch language: hserve language [en|zh]"
+echo "📋 使用说明："
+echo "  1️⃣ 生成证书： hserve-certgen"
+echo "  2️⃣ 安装 CA 证书到安卓系统"
+echo "  3️⃣ 启动服务器： hserve"
 echo ""
