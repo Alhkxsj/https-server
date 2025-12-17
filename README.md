@@ -1,45 +1,171 @@
-# HTTPS Server
+# hserve
 
-一个快速搭建本地HTTPS服务器的工具。
+A tool for quickly setting up a local HTTPS server.
 
-## 使用说明
-注意注意。每一次。安装新版本之后，都要重新生成证书，并从系统里删除以前的旧证书。重新安装新证书。
-详细使用说明请参见 [使用说明文档](./docs/usage.md)。
+## Features
 
-## 安全模型
+- [x] Single executable file with multi-subcommand design
+- [x] Smart certificate management (auto-generate, install)
+- [x] Access path whitelist control
+- [x] Support for external TLS certificates
+- [x] Interactive language selection during installation
+- [x] Dynamic Chinese/English interface switching
+- [x] Multi-architecture cross-compilation support
+- [x] Termux environment optimization
 
-关于安全模型的信息请参见 [安全模型文档](./docs/security-model.md)。
+## Usage
 
-## Android CA安装
+> [WARNING] Note: After each new version installation, it's recommended to regenerate certificates and install them into the system.
 
-在Android设备上安装CA证书的详细步骤请参见 [Android CA安装文档](./docs/android-ca-install.md)。
+For detailed usage instructions, please refer to [Usage Documentation](./docs/usage.md).
 
-## 构建与安装
+## Subcommand Details
 
-### 构建
+hserve supports the following subcommands:
+
+### gen-cert - Generate Certificate
+```bash
+hserve gen-cert           # Generate certificate
+hserve gen-cert --force   # Force regenerate certificate
+```
+
+### serve - Start Server
+```bash
+hserve serve                                # Start server (default port 8443, current directory)
+hserve serve --port 9443 --dir /sdcard     # Specify port and directory
+hserve serve --quiet                       # Quiet mode (no access logs)
+hserve serve --allow /sdcard --allow /home # Set access whitelist
+hserve serve --auto-gen                    # Auto-generate certificates for first run
+hserve serve --tls-cert-file cert.pem --tls-key-file key.pem # Use external certificates
+```
+
+### language - Switch language
+```bash
+hserve language en    # Switch to English
+hserve language zh    # Switch to Chinese
+```
+
+### install-ca - Install CA certificate to Termux trust store
+```bash
+hserve install-ca    # Install CA certificate to Termux trust store
+```
+
+### export-ca - Export CA certificate
+```bash
+hserve export-ca     # Export CA certificate to download directory for manual installation to Android system
+```
+
+## Build and Installation
+
+### Requirements
+- Go 1.21 or higher
+- Termux environment (for installation and usage)
+
+### Build Commands
+
+```bash
+# Build binary
+make build
+
+# Build multi-architecture versions
+make multiarch
+
+# Build deb package
+make deb
+
+# Format code
+make fmt
+
+# Check code
+make vet
+
+# Run tests
+make test
+
+# Clean build files
+make clean
+```
+
+### Installation Methods
+
+**Method 1: Direct binary installation**
+```bash
+make install
+```
+
+**Method 2: Install deb package**
+```bash
+# Build and install
+make install-deb
+
+# Or manual installation
+dpkg -i dist/*.deb
+```
+
+## Architecture
+
+### Project Structure
+```
+hserve/
+├── cmd/                 # Command line entry
+│   ├── hserve/          # Main program entry
+│   └── root.go          # Cobra root command
+├── internal/
+│   ├── certmanager/     # Certificate management module
+│   │   ├── generate.go  # Certificate generation logic
+│   │   ├── check.go     # Certificate check logic
+│   │   └── install.go   # Certificate installation logic
+│   ├── server/          # HTTP server module
+│   ├── tls/             # TLS configuration policy
+│   └── i18n/            # Internationalization support
+├── scripts/             # Build scripts
+│   ├── build-deb.sh     # deb package build script
+│   └── build-multiarch.sh # Multi-architecture build script
+└── docs/                # Documentation
+```
+
+## License
+
+This project is licensed under [LICENSE](./LICENSE).
+
+## Usage Notes
+Attention: After each new version installation, you need to regenerate the certificate and remove the old certificate from the system. Then reinstall the new certificate.
+For detailed usage instructions, please refer to [Usage Documentation](./docs/usage.md).
+
+...
+
+For information about the security model, please refer to [Security Model Documentation](./docs/security-model.md).
+
+...
+
+For detailed steps on installing CA certificates on Android devices, please refer to [Android CA Installation Documentation](./docs/android-ca-install.md).
+
+## Build and Installation
+
+### Build
 
 ```bash
 make build
 ```
 
-### 构建deb包
+### Build deb package
 
 ```bash
 make deb
 ```
 
-### 安装
+### Install
 
 ```bash
 make install
 ```
 
-安装deb包：
+Install deb package:
 
 ```bash
 dpkg -i dist/*.deb
 ```
 
-## 许可证
+## License
 
-本项目采用 [LICENSE](./LICENSE) 许可证。
+This project is licensed under [LICENSE](./LICENSE).

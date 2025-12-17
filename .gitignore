@@ -1,0 +1,34 @@
+# Build artifacts
+hserve
+hserve_test
+hserve_final
+hserve_final_check
+
+# Build directories
+build/
+dist/
+pkg/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env

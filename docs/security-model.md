@@ -1,107 +1,107 @@
-1. 设计目标
+1. Design Goals
 
-本项目安全模型遵循以下原则：
+The security model of this project follows these principles:
 
-本地优先
+Local-first
 
-用户完全可控
+Full user control
 
-不依赖第三方 CA
+No third-party CA dependency
 
-不引入复杂 PKI 体系
-
-
-
----
-
-2. 信任模型
-
-用户
- └─ 安装本地 CA（用户主动信任）
-      └─ HTTPS Server（仅本地有效）
-
-CA 只在本机生成
-
-私钥不离开设备
+No complex PKI system
 
 
 
 ---
 
-3. 为什么使用自签 CA
+2. Trust Model
 
-原因：
+User
+ └─ Install local CA (user actively trusts)
+      └─ hserve (only valid locally)
 
-Let’s Encrypt 不适合本地 / IP
+CA is only generated on this device
 
-Android 本地开发证书需求明确
+Private key never leaves the device
 
-自签 CA = 用户主动信任
-
-
-这是 开发者工具，不是公网服务。
 
 
 ---
 
-4. TLS 策略
+3. Why Use Self-Signed CA
 
-TLS 最低版本：TLS 1.2
+Reasons:
 
-禁用不安全协议
+Let's Encrypt is not suitable for local / IP usage
 
-证书有效期较长，减少重复操作
+Android local development certificate needs are clear
+
+Self-signed CA = User actively trusts
 
 
-具体参数定义见：
+This is a developer tool, not a public network service.
+
+
+---
+
+4. TLS Policy
+
+TLS minimum version: TLS 1.2
+
+Disable insecure protocols
+
+Certificate validity is longer to reduce repeated operations
+
+
+Specific parameters defined in:
 
 internal/tls/policy.go
 
 
 ---
 
-5. 不做的事情（刻意）
+5. Things Not Done (Intentionally)
 
-❌ 自动安装系统证书
+[X] Automatically install system certificates
 
-❌ 绕过 Android 安全提示
+[X] Bypass Android security prompts
 
-❌ 后台常驻服务
-
-
-用户必须明确知道自己在做什么。
+[X] Background resident service
 
 
----
-
-四、适用场景总结
-
-本地 HTTPS 开发测试
-
-Android ↔ PC 文件共享
-
-局域网设备访问
-
-
-不适合：
-
-公网部署
-
-商业 HTTPS 服务
-
+Users must clearly know what they are doing.
 
 
 ---
 
-五、结束语
+4. Applicable Scenarios Summary
 
-这是一个 为清楚的人准备的工具。
+Local HTTPS development testing
 
-没有魔法
+Android ↔ PC file sharing
 
-没有隐蔽行为
-
-所有证书、信任都在你手里
+LAN device access
 
 
-如果你理解 HTTPS，那么你会喜欢它。
+Not suitable for:
+
+Public network deployment
+
+Commercial HTTPS services
+
+
+
+---
+
+5. Conclusion
+
+This is a tool designed for clear-minded people.
+
+No magic
+
+No hidden behavior
+
+All certificates and trusts are in your hands
+
+
+If you understand HTTPS, you will like it.

@@ -1,6 +1,13 @@
 #!/bin/bash
 set -e
 
-echo "🗑️  卸载 HTTPS 服务器..."
-echo "ℹ️  证书目录未删除：$PREFIX/etc/https-server"
-echo "如需手动删除：rm -rf $PREFIX/etc/https-server"
+echo "[UNINSTALL] Uninstalling hserve..."
+
+# 尝试清理已安装到 Termux 信任库的证书
+if [ -f "$PREFIX/etc/tls/certs/hserve_ca.crt" ]; then
+    rm -f "$PREFIX/etc/tls/certs/hserve_ca.crt"
+    echo "[SUCCESS] Cleaned certificates from Termux trusted store"
+fi
+
+echo "[INFO] Certificate directory not deleted: $PREFIX/etc/hserve"
+echo "To manually delete: rm -rf $PREFIX/etc/hserve"

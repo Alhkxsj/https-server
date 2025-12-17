@@ -1,7 +1,7 @@
-.PHONY: all build clean install termux-deb
+.PHONY: all build clean install deb multiarch install-deb
 
-APP_NAME := https-server
-VERSION  := 1.2.1
+APP_NAME := hserve
+VERSION  := 1.2.3
 
 PREFIX ?= /data/data/com.termux/files/usr
 BIN_DIR := build/bin
@@ -13,35 +13,58 @@ all: build
 build:
 	@echo "🔧 构建程序..."
 	@mkdir -p $(BIN_DIR)
-	go build -o $(BIN_DIR)/https-server ./cmd/https-server
-	go build -o $(BIN_DIR)/https-certgen ./cmd/https-certgen
+	go build -o $(BIN_DIR)/hserve ./cmd/hserve
 	@echo "✅ 构建完成"
 
 install: build
 	@echo "📦 安装到 Termux..."
-	install -Dm755 $(BIN_DIR)/https-server $(PREFIX)/bin/https-server
-	install -Dm755 $(BIN_DIR)/https-certgen $(PREFIX)/bin/https-certgen
-	mkdir -p $(PREFIX)/etc/https-server
+	install -Dm755 $(BIN_DIR)/hserve $(PREFIX)/bin/hserve
+	mkdir -p $(PREFIX)/etc/hserve
 	@echo "✅ 安装完成"
 
-deb: build
-	@echo "📦 构建 Termux deb 包..."
-	rm -rf $(PKG_DIR)
-	mkdir -p $(PKG_DIR)/DEBIAN
-	mkdir -p $(PKG_DIR)$(PREFIX)/bin
-	mkdir -p $(PKG_DIR)$(PREFIX)/etc/https-server
+deb:
+	@echo "📦 构建当前架构的 deb 包..."
+	./scripts/build-deb.sh
 
-	cp packaging/termux/control  $(PKG_DIR)/DEBIAN/
-	cp packaging/termux/postinst $(PKG_DIR)/DEBIAN/
-	cp packaging/termux/prerm    $(PKG_DIR)/DEBIAN/
-	chmod 755 $(PKG_DIR)/DEBIAN
-	chmod 755 $(PKG_DIR)/DEBIAN/*
+deb-all:
+	@echo "📦 构建所有架构的 deb 包..."
+	./scripts/build-deb-multiarch.sh
 
-	cp $(BIN_DIR)/https-server     $(PKG_DIR)$(PREFIX)/bin/
-	cp $(BIN_DIR)/https-certgen    $(PKG_DIR)$(PREFIX)/bin/
+multiarch:
+	@echo "📦 构建多架构版本..."
+	./scripts/build-multiarch.sh
 
-	dpkg-deb --build $(PKG_DIR) $(DIST_DIR)/$(APP_NAME)_$(VERSION)_aarch64.deb
-	@echo "✅ deb 构建完成"
+install-deb: deb
+	@echo "📦 安装 deb 包 (aarch64)..."
+	dpkg -i $(DIST_DIR)/$(APP_NAME)_$(VERSION)_aarch64.deb
+
+install-deb-all: deb
+	@echo "📦 安装所有架构的 deb 包..."
+	@for arch in aarch64 arm i686 x86_64; do \
+		if [ -f $(DIST_DIR)/$(APP_NAME)_$(VERSION)_$arch.deb ]; then \
+			dpkg -i $(DIST_DIR)/$(APP_NAME)_$(VERSION)_$arch.deb; \
+		fi \
+	done
+
+install-deb-arch:
+	@echo "📦 安装指定架构的 deb 包..."
+	@if [ -z "$(ARCH)" ]; then \
+		echo "请指定架构: make install-deb-arch ARCH=aarch64"; \
+		exit 1; \
+	fi
+	dpkg -i $(DIST_DIR)/$(APP_NAME)_$(VERSION)_$(ARCH).deb
 
 clean:
 	rm -rf build dist
+
+fmt:
+	@echo "🎨 格式化代码..."
+	go fmt ./...
+
+vet:
+	@echo "🔍 检查代码..."
+	go vet ./...
+
+test:
+	@echo "🧪 运行测试..."
+	go test ./...

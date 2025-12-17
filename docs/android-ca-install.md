@@ -1,50 +1,44 @@
-1. 证书文件位置
+1. Certificate File Location
 
-运行 https-certgen 后，会生成一个 CA 证书文件
-证书文件默认放在home目录
-~/https-ca.crt
+After running hcertgen, a CA certificate file will be generated
+The certificate file is placed in the home directory by default
+~/hserve-ca.crt
 
 
 ---
 
-2. 复制证书到手机存储
+2. Copy Certificate to Phone Storage
 
-可以复制到：
+You can copy it to:
 
 /storage/emulated/0/Download/
-也不一定非得复制到这里，只要在选择证书文件的时候，你能找得到在哪就行
+You don't have to copy it here specifically, just make sure you can find it when selecting the certificate file
 
 ---
 
-3. Android 安装步骤
+3. Android Installation Steps
 
-1. 打开 设置
-
-
-2. 安全 → 加密与凭据
+1. Open Settings
 
 
-3. 安装证书 → CA 证书
+2. Security → Encryption & Credentials
 
 
-4. 选择 https-ca.crt
+3. Install Certificate → CA Certificate
 
 
-5. 命名（例如：Local HTTPS CA）（如果没让你命名可能他自己会命名）
+4. Select hserve-ca.crt
 
-6. 如果找不到，那在设置最上方的搜索框里搜索（证书）然后找到安装证书相关搜索结果，安装证书。
+
+5. If you can't find it, search in the settings top search box (certificate) and find the relevant certificate installation search results, then install the certificate.
 
 
 ---
 
-4. 注意事项
+6. Notes
 
-Android 会警告“证书可监控流量”——这是正常的
+Android will warn "Certificate can monitor traffic" - this is normal
 
-证书仅用于你本地生成的 HTTPS 服务
+Certificate is only for your locally generated HTTPS service
 
-不会上传、不联网、不共享
-
-
-
----
+No upload, no internet, no sharing
