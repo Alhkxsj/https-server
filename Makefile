@@ -30,6 +30,7 @@ deb: build
 	mkdir -p $(PKG_DIR)/DEBIAN
 	mkdir -p $(PKG_DIR)$(PREFIX)/bin
 	mkdir -p $(PKG_DIR)$(PREFIX)/etc/hserve
+	mkdir -p $(DIST_DIR)
 
 	cp packaging/termux/control  $(PKG_DIR)/DEBIAN/
 	cp packaging/termux/postinst $(PKG_DIR)/DEBIAN/
