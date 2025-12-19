@@ -14,13 +14,11 @@ build:
 	@echo "🔧 构建程序..."
 	@mkdir -p $(BIN_DIR)
 	go build -o $(BIN_DIR)/hserve ./cmd/hserve
-	go build -o $(BIN_DIR)/hserve-certgen ./cmd/hserve-certgen
 	@echo "✅ 构建完成"
 
 install: build
 	@echo "📦 安装到 Termux..."
 	install -Dm755 $(BIN_DIR)/hserve $(PREFIX)/bin/hserve
-	install -Dm755 $(BIN_DIR)/hserve-certgen $(PREFIX)/bin/hserve-certgen
 	mkdir -p $(PREFIX)/etc/hserve
 	@echo "✅ 安装完成"
 
@@ -39,7 +37,6 @@ deb: build
 	chmod 755 $(PKG_DIR)/DEBIAN/*
 
 	cp $(BIN_DIR)/hserve     $(PKG_DIR)$(PREFIX)/bin/
-	cp $(BIN_DIR)/hserve-certgen    $(PKG_DIR)$(PREFIX)/bin/
 
 	dpkg-deb --build $(PKG_DIR) $(DIST_DIR)/$(APP_NAME)_$(VERSION)_aarch64.deb
 	@echo "✅ deb 构建完成"

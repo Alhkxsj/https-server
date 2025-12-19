@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Alhkxsj/hserve/internal/server"
+	"github.com/Alhkxsj/hserve/internal/app/hserve"
 	"github.com/Alhkxsj/hserve/pkg/certgen"
 )
 
