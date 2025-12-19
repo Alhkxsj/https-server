@@ -49,7 +49,6 @@ func Generate(force bool) error {
 		NotBefore:             time.Now(),
 		NotAfter:              time.Now().AddDate(10, 0, 0), // CA证书有效期10年
 		KeyUsage:              x509.KeyUsageCertSign | x509.KeyUsageCRLSign,
-		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth},
 		BasicConstraintsValid: true,
 		IsCA:                  true,
 	}

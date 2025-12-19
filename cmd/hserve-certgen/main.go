@@ -9,19 +9,24 @@ import (
 )
 
 func fatal(msg string, err error) {
-	fmt.Println("❌ 错误:", msg)
+	fmt.Fprintln(os.Stderr, "❌ 错误:", msg)
 	if err != nil {
-		fmt.Println("   详情:", err.Error())
+		fmt.Fprintln(os.Stderr, "   详情:", err.Error())
 	}
 	os.Exit(1)
 }
 
 func main() {
+	fmt.Println("💡 注意: hserve-certgen 功能已合并到主程序中")
+	fmt.Println("💡 请使用 'hserve certgen' 命令来生成证书")
+	fmt.Println()
+
 	flag.Usage = func() {
 		fmt.Println("🔐 HTTPS 证书生成工具 - 为您的安全访问保驾护航")
+		fmt.Println("(此工具已合并到主程序中，请使用 hserve certgen 命令)")
 		fmt.Println()
 		fmt.Println("📖 使用方法:")
-		fmt.Printf("  %s [选项]\n", "hserve-certgen")
+		fmt.Printf("  hserve certgen [选项]\n")
 		fmt.Println()
 		fmt.Println("✨ 可用选项:")
 		fmt.Println("  -force")
@@ -46,7 +51,7 @@ func main() {
 	}
 
 	if *version {
-		fmt.Println("🔐 hserve 证书生成工具 v1.2.2")
+		fmt.Println("🔐 hserve 证书生成工具 v1.3.0")
 		fmt.Println("👤 作者: 快手阿泠 (Alexa Haley)")
 		fmt.Println("🏠 项目地址: https://github.com/Alhkxsj/hserve")
 		fmt.Println("✨ 愿代码如诗，生活如歌 ~")

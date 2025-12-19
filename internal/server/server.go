@@ -14,6 +14,10 @@ type Options struct {
 }
 
 func Run(opt Options) error {
+	if err := PreflightCheck(opt.Addr, opt.CertPath, opt.KeyPath); err != nil {
+		return err
+	}
+
 	tlsConfig, err := LoadTLSConfig(opt.CertPath, opt.KeyPath)
 	if err != nil {
 		return err
