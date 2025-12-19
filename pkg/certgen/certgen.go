@@ -149,6 +149,7 @@ func ShowInstructions(caCertPath string) {
 	fmt.Println("4. 安装证书 → CA证书")
 	fmt.Println("5. 选择证书文件，命名为 'hserve'")
 	fmt.Println()
+	fmt.Println("💡 温馨提示: 使用 deb 包安装会自动为您生成证书")
 	fmt.Println("🎮 启动服务器示例:")
 	fmt.Println("  cd /path/to/website")
 	fmt.Println("  hserve")

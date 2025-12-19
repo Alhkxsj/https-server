@@ -30,9 +30,9 @@ func main() {
 	args := os.Args[2:]
 
 	switch strings.ToLower(subCommand) {
-	case "serve", "server":
+	case "serve":
 		runServerWithArgs(args)
-	case "cert", "certgen", "generate-cert", "gen-cert":
+	case "cert":
 		runCertGen(args)
 	case "version", "-version", "--version":
 		showVersion()
@@ -52,8 +52,8 @@ func showHelp() {
 	fmt.Printf("  hserve [命令] [选项]\n")
 	fmt.Println()
 	fmt.Println("✨ 可用命令:")
-	fmt.Println("  serve/server     启动 HTTPS 文件服务器（默认）")
-	fmt.Println("  cert/certgen     生成证书")
+	fmt.Println("  serve            启动 HTTPS 文件服务器（默认）")
+	fmt.Println("  cert             生成证书")
 	fmt.Println("  version          显示版本信息")
 	fmt.Println("  help             显示此帮助信息")
 	fmt.Println()
